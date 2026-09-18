@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum WindowType {
+  casement
+  awning
+  tilt_turn
+  sliding
+
+  @@map("window_type")
+}
+
+enum OrderStatus {
+  new
+  in_progress
+  completed
+
+  @@map("order_status")
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Order {
+  id         String      @id @default(uuid()) @db.Uuid
+  clientName String      @map("client_name")
+  address    String
+  windowType WindowType  @map("window_type")
+  width      Float
+  height     Float
+  status     OrderStatus @default(new)
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
