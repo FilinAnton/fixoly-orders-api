@@ -17,6 +17,7 @@ A production-style REST API for managing window replacement orders. The project 
 - database-level positive-dimension constraint in addition to DTO validation;
 - Swagger/OpenAPI documentation;
 - unit tests for creation, filtering/pagination, status changes, and missing orders;
+- end-to-end coverage for registration, JWT access, and the order lifecycle;
 - Docker Compose configuration for local PostgreSQL.
 
 ## Technology
@@ -226,6 +227,7 @@ Example validation response:
 pnpm prisma:generate
 pnpm lint
 pnpm test
+pnpm test:e2e
 pnpm build
 ```
 
