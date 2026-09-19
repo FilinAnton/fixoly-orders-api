@@ -20,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { PaymentsService } from '../payments/payments.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ListOrdersQueryDto } from './dto/list-orders-query.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -30,7 +31,10 @@ import { OrdersService } from './orders.service';
 @UseGuards(JwtAuthGuard)
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly paymentsService: PaymentsService,
+  ) {}
 
   @Get()
   @ApiOkResponse({
@@ -50,6 +54,14 @@ export class OrdersController {
   @ApiCreatedResponse({ description: 'Order created' })
   create(@Body() dto: CreateOrderDto) {
     return this.ordersService.create(dto);
+  }
+
+  @Post(':id/complete')
+  @ApiOkResponse({
+    description: 'Capture the authorized payment and complete the order',
+  })
+  complete(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.paymentsService.completeOrder(id);
   }
 
   @Patch(':id/status')
